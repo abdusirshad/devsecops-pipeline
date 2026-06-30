@@ -1,0 +1,38 @@
+# --- secrets / local config -------------------------------------------------
+.env
+*.pem
+*.key
+*.pfx
+cosign.key
+cosign.pub
+
+# --- python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- terraform --------------------------------------------------------------
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+.terraform.lock.hcl
+
+# --- scan / build artifacts -------------------------------------------------
+sbom.spdx.json
+sbom.json
+trivy-results.*
+*.sarif
+
+# --- editor / os ------------------------------------------------------------
+.DS_Store
+.idea/
+.vscode/
+*.swp

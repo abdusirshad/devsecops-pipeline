@@ -1,0 +1,24 @@
+# Sample input that VIOLATES the policy gates, to demonstrate enforcement.
+# Run: conftest test policy/conftest/inputs/deployment-fail.yaml --policy policy
+# Expected: denials for :latest tag, root user, privilege escalation,
+# writable root FS, and missing resource limits.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insecure-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insecure-api
+  template:
+    metadata:
+      labels:
+        app: insecure-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/abdusirshad/devsecops-sample-api:latest
+          securityContext:
+            allowPrivilegeEscalation: true
+            readOnlyRootFilesystem: false
