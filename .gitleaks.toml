@@ -1,0 +1,16 @@
+# Gitleaks configuration. Extends the upstream default ruleset and adds a
+# small allowlist for the obvious placeholder values in this sample repo.
+title = "devsecops-pipeline gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Documentation placeholders and example env values."
+paths = [
+  '''\.env\.example$''',
+  '''README\.md$''',
+]
+regexes = [
+  '''(?i)(your[-_]?token[-_]?here|changeme|placeholder|example)''',
+]

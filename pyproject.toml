@@ -1,0 +1,23 @@
+[project]
+name = "devsecops-sample-api"
+version = "1.0.0"
+description = "Sample FastAPI service scanned by the reference DevSecOps pipeline."
+authors = [{ name = "Md Irshad" }]
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+[tool.pytest.ini_options]
+testpaths = ["app/tests"]
+addopts = "-ra"
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["app"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+# S101 (assert) is fine in tests.
+[tool.ruff.lint.per-file-ignores]
+"app/tests/*" = ["S101"]

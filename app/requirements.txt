@@ -1,0 +1,4 @@
+# Runtime dependencies (pinned for reproducible builds + accurate SBOM/SCA).
+fastapi==0.123.4
+uvicorn[standard]==0.34.0
+pydantic==2.11.7
