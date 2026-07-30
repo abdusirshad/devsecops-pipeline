@@ -9,7 +9,7 @@ IMAGE      := $(IMAGE_NAME):$(IMAGE_TAG)
 .DEFAULT_GOAL := help
 
 .PHONY: help install test lint build run scan-fs scan-config scan-image \
-        sbom policy scan-local clean
+        sbom policy scan-local diagrams clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -57,6 +57,13 @@ policy: ## Run OPA/Conftest policy tests + enforce on k8s manifests
 		|| echo "conftest not installed -> https://www.conftest.dev/install"
 
 scan-local: lint test scan-fs scan-config policy sbom ## Run the full local gate set
+
+diagrams: ## Render architecture diagrams to PNG (needs Graphviz `dot`)
+	@command -v dot >/dev/null 2>&1 \
+		&& pip install -q -r docs/diagrams/requirements.txt \
+		&& cd docs/diagrams && python pipeline.py && python security_controls.py \
+		&& echo "wrote docs/diagrams/pipeline.png + security_controls.png" \
+		|| echo "graphviz 'dot' not installed -> conda install -c conda-forge graphviz (or apt/brew)"
 
 clean: ## Remove local scan/build artifacts
 	rm -f sbom.spdx.json trivy-results.* *.sarif

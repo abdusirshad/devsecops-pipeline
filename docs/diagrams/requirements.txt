@@ -1,0 +1,5 @@
+# Diagrams-as-code for the DevSecOps reference pipeline.
+# Requires the Graphviz `dot` binary on PATH:
+#   conda install -y -c conda-forge graphviz
+#   # or: apt-get install -y graphviz   /   brew install graphviz
+diagrams==0.23.4

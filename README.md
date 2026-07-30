@@ -47,77 +47,144 @@ Everything referenced above exists in the repo — there are no stub files.
 
 ---
 
-## Architecture
+## Pipeline
 
-The workflow (`.github/workflows/devsecops.yml`) runs eight independent gates in
-parallel on every push and pull request, then a final guarded `release` job that
-only fires on push to `main`:
+The workflow (`.github/workflows/devsecops.yml`) runs **eight independent jobs in
+parallel** on every push and pull request. Four are **hard gates** that fail the
+build; four are **report-only** scanners (audit / soft-fail) that surface
+findings without blocking. A separate `release` job (build → scan → sign → push)
+runs **only on demand** via `workflow_dispatch`.
 
+![DevSecOps pipeline](docs/diagrams/pipeline.png)
+
+<sub>Diagram-as-code — regenerate with `make diagrams`. Solid green = hard gate,
+dashed amber = report-only, blue = on-demand release.</sub>
+
+```mermaid
+flowchart LR
+    T([Commit / Pull Request<br/>push and PR to main]):::trigger
+
+    subgraph CI["CI gates — every push & PR, in parallel"]
+        direction TB
+        L["lint-test<br/>ruff + pytest"]:::gate
+        G["secrets-scan<br/>Gitleaks"]:::gate
+        H["dockerfile-lint<br/>Hadolint"]:::gate
+        P["policy<br/>Conftest / OPA"]:::gate
+        S["sast<br/>Semgrep"]:::report
+        F["fs-scan<br/>Trivy fs + config"]:::report
+        C["iac-scan<br/>Checkov"]:::report
+        B["sbom<br/>Syft (SPDX)"]:::report
+    end
+
+    T --> L & G & H & P
+    T -.-> S & F & C & B
+
+    subgraph REL["release — workflow_dispatch only (manual)"]
+        direction LR
+        BD["docker build"]:::rel --> TI["Trivy image scan"]:::rel --> CS["cosign keyless sign<br/>Sigstore + OIDC"]:::rel --> GH["push → GHCR"]:::rel
+    end
+
+    P == all gates green<br/>+ manual dispatch ==> BD
+
+    classDef trigger fill:#24292f,color:#fff,stroke:#24292f;
+    classDef gate fill:#dafbe1,stroke:#1a7f37,stroke-width:2px,color:#0b3d1a;
+    classDef report fill:#fff8c5,stroke:#bf8700,stroke-dasharray:5 4,color:#5c4500;
+    classDef rel fill:#ddf4ff,stroke:#0969da,stroke-width:2px,color:#0a3069;
 ```
- push / pull_request
-        │
-        ├─▶ lint-test        ─ ruff + pytest
-        ├─▶ secrets-scan     ─ Gitleaks
-        ├─▶ sast             ─ Semgrep (p/ci, p/python, p/security-audit)
-        ├─▶ dockerfile-lint  ─ Hadolint
-        ├─▶ fs-scan          ─ Trivy fs (vuln+secret) + Trivy config (IaC)
-        ├─▶ iac-scan         ─ Checkov (terraform, kubernetes, dockerfile)
-        ├─▶ policy           ─ Conftest/OPA (verify + enforce)
-        └─▶ sbom             ─ Syft (SPDX SBOM → artifact)
-                 │
-                 ▼  (all gates green AND event == push to main)
-            release          ─ docker build → Trivy image scan
-                               → push to GHCR → cosign keyless sign (OIDC)
-```
 
-### Why `release` is guarded
-
-`release` declares `permissions: { packages: write, id-token: write }` and is
-gated by `if: github.event_name == 'push' && github.ref == 'refs/heads/main'`.
-Pull requests and forks never reach it, so they don't need registry credentials
-or an OIDC trust relationship — the pipeline still runs fully green for
-contributors. Cosign uses **keyless** signing (Sigstore + GitHub OIDC), so there
-are no private keys stored anywhere.
+📐 Full deep dive with sequence + supply-chain diagrams: **[docs/architecture.md](docs/architecture.md)**.
 
 ---
 
-## Pipeline stages
+## Security controls
 
-| # | Job | Tool (OSS) | What it gates | Fails the build on |
-|---|-----|------------|---------------|--------------------|
-| 1 | `lint-test` | ruff, pytest | Code style + unit correctness | Lint error or failing test |
-| 2 | `secrets-scan` | Gitleaks | Hardcoded credentials in code/history | Any unallowlisted secret |
-| 3 | `sast` | Semgrep | Insecure code patterns (Python/security-audit) | Any rule match (`--error`) |
-| 4 | `dockerfile-lint` | Hadolint | Dockerfile best practices | Warning or worse |
-| 5 | `fs-scan` | Trivy (`fs` + `config`) | Dependency CVEs, leaked secrets, IaC misconfig | CRITICAL/HIGH (fixable) |
-| 6 | `iac-scan` | Checkov | Terraform / K8s / Dockerfile misconfig | Any failed check |
-| 7 | `policy` | Conftest / OPA | Org policy-as-code on K8s manifests | Any `deny` rule |
-| 8 | `sbom` | Syft | Software Bill of Materials (SPDX) | (artifact only) |
-| 9 | `release`* | Docker, Trivy, Cosign | Image CVEs + provenance | CRITICAL/HIGH in image |
+Shift-left coverage — each SDLC stage maps to the OSS tool that covers it.
 
-\* `release` runs only on push to `main`.
+![Security controls](docs/diagrams/security_controls.png)
+
+| SDLC stage | Job | Tool (OSS) | What it catches | Gate / Report |
+|------------|-----|------------|-----------------|---------------|
+| Code — secrets | `secrets-scan` | Gitleaks | Hardcoded credentials in tree/history | **HARD GATE** |
+| Code — SAST | `sast` | Semgrep (`p/ci`,`p/python`,`p/security-audit`) | Insecure code patterns | Report-only |
+| Dependencies (SCA) | `fs-scan` | Trivy `fs` | CVEs in pinned deps, leaked secrets | Report-only |
+| Container — Dockerfile | `dockerfile-lint` | Hadolint | Dockerfile anti-patterns | **HARD GATE** |
+| Container — image | `release` | Trivy image | CVEs in built image (before push) | Release-only |
+| IaC misconfig | `fs-scan` / `iac-scan` | Trivy `config` + Checkov | Terraform / K8s / Dockerfile misconfig | Report-only |
+| Policy-as-code | `policy` | Conftest / OPA | Org K8s policy (5 baseline rules) | **HARD GATE** |
+| Supply chain — SBOM | `sbom` | Syft (SPDX) | Software Bill of Materials | Artifact |
+| Supply chain — signing | `release` | cosign (keyless) | Provenance via Sigstore + OIDC | Release-only |
 
 ---
 
-## Security controls matrix
+## How the gates work
 
-| Control | Mechanism in this repo |
-|---------|------------------------|
-| Secret detection | Gitleaks gate + `.gitleaks.toml` allowlist for documented placeholders |
-| Static analysis (SAST) | Semgrep public rulesets, failing on any finding |
-| Dependency scanning (SCA) | Trivy filesystem scan over pinned `requirements*.txt` |
-| Container hardening | Multi-stage build, pinned `python:3.13-slim`, non-root `USER 10001`, `HEALTHCHECK` |
-| Image vulnerability scan | Trivy image scan **before** push (build fails on CRITICAL/HIGH) |
-| IaC misconfiguration | Trivy `config` + Checkov over `terraform/` and `k8s/` |
-| Policy-as-code | Conftest/OPA: no `:latest`, non-root, no privesc, read-only root FS, resource limits |
-| Supply-chain provenance | Syft SBOM (SPDX) artifact + Cosign **keyless** signing via OIDC |
-| Least privilege | Workflow default `permissions: contents: read`; elevated scope only in `release` |
-| No long-lived keys | Keyless cosign (Sigstore), GHCR auth via ephemeral `GITHUB_TOKEN` |
+**Hard gates (fail the build):** `lint-test`, `secrets-scan` (Gitleaks),
+`dockerfile-lint` (Hadolint), and `policy` (Conftest/OPA). If any of these fail,
+the PR is not mergeable.
 
-The sample `terraform/` and `k8s/` manifests are deliberately written to **pass**
-the scanners (KMS encryption + rotation, versioning, public-access block,
-TLS-only policy; non-root pod, dropped capabilities, read-only FS, probes,
-resource limits) so the reference pipeline is green out of the box.
+**Report-only scanners (never block):** `sast` (Semgrep audit mode), `fs-scan`
+(Trivy `exit-code: 0`), and `iac-scan` (Checkov `soft_fail: true`). They print
+findings for review but do not turn CI red.
+
+### Why the insecure OPA fixture doesn't fail the build
+
+`policy/conftest/inputs/deployment-fail.yaml` is a **deliberately insecure
+negative-test fixture** (latest tag, root, privesc, writable root FS, missing
+limits). It exists so the rego's own unit tests can assert that the `deny` rules
+actually fire — it is exercised by `conftest verify`, **not** by the enforcing
+`conftest test` step. The enforcing step only evaluates the compliant
+`k8s/deployment.yaml` and `deployment-pass.yaml`, which produce **0 denials**.
+Semgrep/Trivy/Checkov run in report mode for the same reason: the repo
+intentionally ships illustrative + insecure sample material, so enforcement is
+concentrated in the OPA policy job while the scanners stay green and informative.
+
+---
+
+## Supply chain
+
+The `release` job is guarded by `if: github.event_name == 'workflow_dispatch'`
+and is the only place with elevated scope
+(`permissions: { packages: write, id-token: write }`). Because PRs and forks
+never reach it, they need no registry credentials or OIDC trust — the push/PR
+badge stays green and deterministic. When run manually it:
+
+1. builds the image (load-only, no push),
+2. scans it with **Trivy** (CRITICAL/HIGH),
+3. pushes to **GHCR** (`:sha` + `:latest`),
+4. signs it with **cosign keyless** (Sigstore + GitHub OIDC → Rekor transparency
+   log) — **no long-lived keys** anywhere.
+
+A **Syft SPDX SBOM** is produced on every run and uploaded as an artifact.
+See the release + SBOM Mermaid flow in [docs/architecture.md](docs/architecture.md).
+
+---
+
+## What this demonstrates
+
+- **Shift-left security** wired end-to-end: secrets, SAST, SCA, container,
+  IaC, policy-as-code, SBOM, and image signing in one workflow.
+- **Deliberate gate design** — a clear split between hard gates and report-only
+  scanners, with enforcement concentrated in OPA policy-as-code.
+- **Least privilege** — default `contents: read`; elevated scope isolated to the
+  manual `release` job.
+- **Keyless supply-chain provenance** — SBOM + cosign OIDC signing with no
+  stored secrets, so it runs **green on any public fork**.
+- **Diagrams-as-code** — the pipeline and control map are generated
+  reproducibly (`make diagrams`), not hand-drawn.
+
+---
+
+## Container & IaC hardening
+
+The sample `app/`, `terraform/`, and `k8s/` are deliberately written to **pass**
+the scanners so the reference pipeline is green out of the box:
+
+- **Container** — multi-stage build, pinned `python:3.13-slim`, non-root
+  `USER 10001`, `HEALTHCHECK`.
+- **Terraform** — KMS encryption + rotation, versioning, public-access block,
+  TLS-only bucket policy.
+- **Kubernetes** — non-root pod, dropped capabilities, read-only root FS,
+  liveness/readiness probes, CPU + memory limits.
 
 ---
 
@@ -163,6 +230,7 @@ make scan-image    # build, then Trivy image scan
 make sbom          # Syft SPDX SBOM -> sbom.spdx.json
 make policy        # Conftest: policy unit tests + enforce on k8s manifests
 make scan-local    # lint + test + scan-fs + scan-config + policy + sbom
+make diagrams      # render docs/diagrams/*.png (needs Graphviz `dot`)
 ```
 
 Install the OSS scanners:
