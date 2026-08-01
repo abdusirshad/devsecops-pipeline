@@ -1,0 +1,349 @@
+<mxfile host="Electron">
+  <diagram id="devsecops-pipeline" name="DevSecOps Pipeline">
+    <mxGraphModel pageWidth="3000" pageHeight="1600" dx="1422" dy="762" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===================== ZONES ===================== -->
+
+        <!-- Developer Zone -->
+        <mxCell id="z-dev" value="Developer" style="rounded=1;arcSize=2;fillColor=#f0f4ff;strokeColor=#6366f1;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fontColor=#6366f1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="80" width="180" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Zone -->
+        <mxCell id="z-github" value="GitHub" style="rounded=1;arcSize=2;fillColor=#f8f9fa;strokeColor=#24292e;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fontColor=#24292e;" vertex="1" parent="1">
+          <mxGeometry x="260" y="80" width="180" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- CI Zone -->
+        <mxCell id="z-ci" value="GitHub Actions CI" style="rounded=1;arcSize=2;fillColor=#f0f9ff;strokeColor=#2088FF;strokeWidth=2;strokeDasharray=6,3;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fontColor=#2088FF;" vertex="1" parent="1">
+          <mxGeometry x="500" y="40" width="1380" height="440" as="geometry" />
+        </mxCell>
+
+        <!-- Hard Gates Sub-zone -->
+        <mxCell id="z-hard" value="Hard Gates (PR Blocking)" style="rounded=1;arcSize=3;fillColor=#fff1f2;strokeColor=#e11d48;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=11;fontColor=#e11d48;" vertex="1" parent="1">
+          <mxGeometry x="520" y="80" width="1340" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Report-only Gates Sub-zone -->
+        <mxCell id="z-report" value="Report-Only Gates (Non-blocking)" style="rounded=1;arcSize=3;fillColor=#f0fdf4;strokeColor=#16a34a;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=11;fontColor=#16a34a;" vertex="1" parent="1">
+          <mxGeometry x="520" y="280" width="1340" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Release Track Zone -->
+        <mxCell id="z-release" value="Release Track (Manual Dispatch)" style="rounded=1;arcSize=2;fillColor=#fffbeb;strokeColor=#d97706;strokeWidth=2;strokeDasharray=8,3;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fontColor=#d97706;" vertex="1" parent="1">
+          <mxGeometry x="260" y="560" width="1620" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- GHCR Zone -->
+        <mxCell id="z-ghcr" value="Registry" style="rounded=1;arcSize=2;fillColor=#f3f4f6;strokeColor=#374151;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="1940" y="560" width="200" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== DEVELOPER ZONE ===================== -->
+
+        <!-- Developer icon -->
+        <mxCell id="dev-icon" value="Developer" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/github/6366f1;" vertex="1" parent="1">
+          <mxGeometry x="85" y="140" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Code commit label -->
+        <mxCell id="dev-commit" value="Code Push / PR" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#6366f1;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="55" y="215" width="130" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== GITHUB ZONE ===================== -->
+
+        <!-- GitHub repo icon -->
+        <mxCell id="gh-repo" value="GitHub Repo" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/github/24292e;" vertex="1" parent="1">
+          <mxGeometry x="315" y="130" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions trigger -->
+        <mxCell id="gh-actions" value="GitHub Actions" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/githubactions/2088FF;" vertex="1" parent="1">
+          <mxGeometry x="375" y="130" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== HARD GATES ROW ===================== -->
+
+        <!-- Ruff + Pytest -->
+        <mxCell id="gate-ruff" value="Ruff Lint&#xa;+ Pytest" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/python/3776AB;" vertex="1" parent="1">
+          <mxGeometry x="565" y="115" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Gitleaks -->
+        <mxCell id="gate-gitleaks" value="Gitleaks&#xa;Secrets Scan" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/github/e11d48;" vertex="1" parent="1">
+          <mxGeometry x="810" y="115" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Hadolint -->
+        <mxCell id="gate-hadolint" value="Hadolint&#xa;Dockerfile Lint" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/docker/2496ED;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="115" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Conftest/OPA -->
+        <mxCell id="gate-opa" value="Conftest/OPA&#xa;Policy Check" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/openpolicyagent/7B42BC;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="115" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Hard gate status labels -->
+        <mxCell id="lbl-hard1" value="FAIL = PR BLOCKED" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#e11d48;fontStyle=1;background=#fff1f2;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="565" y="185" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-hard2" value="FAIL = PR BLOCKED" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#e11d48;fontStyle=1;background=#fff1f2;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="785" y="185" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-hard3" value="FAIL = PR BLOCKED" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#e11d48;fontStyle=1;background=#fff1f2;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1035" y="185" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-hard4" value="FAIL = PR BLOCKED" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#e11d48;fontStyle=1;background=#fff1f2;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="185" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== REPORT-ONLY GATES ROW ===================== -->
+
+        <!-- Semgrep SAST -->
+        <mxCell id="gate-semgrep" value="Semgrep&#xa;SAST" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/semgrep/16a34a;" vertex="1" parent="1">
+          <mxGeometry x="565" y="315" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Trivy FS scan -->
+        <mxCell id="gate-trivy-fs" value="Trivy&#xa;Filesystem Scan" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/aquasecurity/1904DA;" vertex="1" parent="1">
+          <mxGeometry x="810" y="315" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Checkov IaC -->
+        <mxCell id="gate-checkov" value="Checkov&#xa;IaC Scan" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/terraform/7B42BC;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="315" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Syft SBOM -->
+        <mxCell id="gate-syft" value="Syft&#xa;SBOM Gen" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/github/16a34a;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="315" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Report-only labels -->
+        <mxCell id="lbl-rep1" value="REPORT ONLY" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#16a34a;fontStyle=1;background=#f0fdf4;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="565" y="385" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-rep2" value="REPORT ONLY" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#16a34a;fontStyle=1;background=#f0fdf4;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="785" y="385" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-rep3" value="REPORT ONLY" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#16a34a;fontStyle=1;background=#f0fdf4;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1035" y="385" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl-rep4" value="REPORT ONLY" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#16a34a;fontStyle=1;background=#f0fdf4;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="385" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== RELEASE TRACK ===================== -->
+
+        <!-- Manual dispatch label -->
+        <mxCell id="lbl-dispatch" value="workflow_dispatch" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#d97706;fontStyle=3;" vertex="1" parent="1">
+          <mxGeometry x="265" y="595" width="140" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Docker Build -->
+        <mxCell id="rel-build" value="Docker Build&#xa;(FastAPI app)" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/docker/2496ED;" vertex="1" parent="1">
+          <mxGeometry x="450" y="610" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Trivy Image Scan -->
+        <mxCell id="rel-trivy" value="Trivy&#xa;Image Scan" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/aquasecurity/1904DA;" vertex="1" parent="1">
+          <mxGeometry x="750" y="610" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Cosign Keyless Sign -->
+        <mxCell id="rel-cosign" value="Cosign Keyless&#xa;Sign (Sigstore)" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/sigstore/4A154B;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="610" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- OIDC label under cosign -->
+        <mxCell id="lbl-oidc" value="Sigstore OIDC" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#4A154B;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="678" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- GHCR Push -->
+        <mxCell id="rel-ghcr-push" value="GHCR Push" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/githubactions/2088FF;" vertex="1" parent="1">
+          <mxGeometry x="1450" y="610" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- GHCR Registry Icon -->
+        <mxCell id="ghcr-icon" value="GHCR&#xa;(Container Registry)" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/github/374151;" vertex="1" parent="1">
+          <mxGeometry x="1990" y="620" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== SAMPLE APP COMPONENTS (right side) ===================== -->
+
+        <!-- Sample App components zone label -->
+        <mxCell id="z-app" value="Sample Application" style="rounded=1;arcSize=2;fillColor=#faf5ff;strokeColor=#9333ea;strokeWidth=2;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#9333ea;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="80" width="320" height="440" as="geometry" />
+        </mxCell>
+
+        <!-- FastAPI -->
+        <mxCell id="app-fastapi" value="FastAPI App" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/fastapi/009688;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="130" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Dockerfile -->
+        <mxCell id="app-dockerfile" value="Dockerfile" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/docker/2496ED;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="130" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Pytest tests -->
+        <mxCell id="app-pytest" value="Pytest Tests" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/python/3776AB;" vertex="1" parent="1">
+          <mxGeometry x="1810" y="130" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- OPA Policy -->
+        <mxCell id="app-opa" value="OPA/Rego&#xa;(5 K8s rules)" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/openpolicyagent/7B42BC;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="270" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Terraform -->
+        <mxCell id="app-tf" value="Terraform&#xa;S3+KMS (scan only)" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=10;fontColor=#334155;image=https://cdn.simpleicons.org/terraform/7B42BC;" vertex="1" parent="1">
+          <mxGeometry x="1760" y="270" width="55" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== EDGES ===================== -->
+
+        <!-- Dev → GitHub Repo -->
+        <mxCell id="e-dev-gh" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6366f1;strokeWidth=2;fontColor=#334155;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="dev-icon" target="gh-repo" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Repo → GitHub Actions -->
+        <mxCell id="e-gh-actions" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#24292e;strokeWidth=2;fontColor=#334155;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="gh-repo" target="gh-actions" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions → Hard Gate 1 (Ruff) -->
+        <mxCell id="e-ci-ruff" value="parallel" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2088FF;strokeWidth=2;fontColor=#334155;fontSize=9;exitX=1;exitY=0.2;entryX=0;entryY=0.5;" edge="1" source="gh-actions" target="gate-ruff" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions → Hard Gate 2 (Gitleaks) -->
+        <mxCell id="e-ci-gitleaks" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2088FF;strokeWidth=2;fontColor=#334155;fontSize=9;exitX=1;exitY=0.4;entryX=0;entryY=0.5;" edge="1" source="gh-actions" target="gate-gitleaks" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions → Hard Gate 3 (Hadolint) -->
+        <mxCell id="e-ci-hadolint" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2088FF;strokeWidth=2;fontColor=#334155;fontSize=9;exitX=1;exitY=0.6;entryX=0;entryY=0.5;" edge="1" source="gh-actions" target="gate-hadolint" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions → Hard Gate 4 (OPA) -->
+        <mxCell id="e-ci-opa" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2088FF;strokeWidth=2;fontColor=#334155;fontSize=9;exitX=1;exitY=0.8;entryX=0;entryY=0.5;" edge="1" source="gh-actions" target="gate-opa" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions → Report Gate 1 (Semgrep) -->
+        <mxCell id="e-ci-semgrep" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#16a34a;strokeWidth=1.5;strokeDasharray=5,3;fontColor=#334155;fontSize=9;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" source="gh-actions" target="gate-semgrep" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions → Report Gate 2 (Trivy FS) -->
+        <mxCell id="e-ci-trivyfs" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#16a34a;strokeWidth=1.5;strokeDasharray=5,3;fontColor=#334155;fontSize=9;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="gh-actions" target="gate-trivy-fs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions → Report Gate 3 (Checkov) -->
+        <mxCell id="e-ci-checkov" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#16a34a;strokeWidth=1.5;strokeDasharray=5,3;fontColor=#334155;fontSize=9;exitX=1;exitY=0.65;entryX=0;entryY=0.5;" edge="1" source="gh-actions" target="gate-checkov" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GitHub Actions → Report Gate 4 (Syft) -->
+        <mxCell id="e-ci-syft" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#16a34a;strokeWidth=1.5;strokeDasharray=5,3;fontColor=#334155;fontSize=9;exitX=1;exitY=0.8;entryX=0;entryY=0.5;" edge="1" source="gh-actions" target="gate-syft" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Manual dispatch → Docker Build -->
+        <mxCell id="e-dispatch-build" value="manual dispatch" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;strokeDasharray=8,3;fontColor=#d97706;fontSize=9;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="gh-repo" target="rel-build" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Docker Build → Trivy Image Scan -->
+        <mxCell id="e-build-trivy" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;fontColor=#334155;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="rel-build" target="rel-trivy" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Trivy Image → Cosign Sign -->
+        <mxCell id="e-trivy-cosign" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;fontColor=#334155;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="rel-trivy" target="rel-cosign" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Cosign → GHCR Push -->
+        <mxCell id="e-cosign-push" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d97706;strokeWidth=2;fontColor=#334155;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="rel-cosign" target="rel-ghcr-push" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GHCR Push → GHCR Registry -->
+        <mxCell id="e-push-ghcr" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#374151;strokeWidth=2;fontColor=#334155;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="rel-ghcr-push" target="ghcr-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== LEGEND ZONE ===================== -->
+
+        <mxCell id="z-legend" value="Legend" style="rounded=1;arcSize=2;fillColor=#ffffff;strokeColor=#9ca3af;strokeWidth=1;strokeDasharray=6,3;verticalAlign=top;align=center;fontStyle=1;fontSize=12;fontColor=#374151;" vertex="1" parent="1">
+          <mxGeometry x="20" y="810" width="430" height="380" as="geometry" />
+        </mxCell>
+
+        <!-- Legend: Hard Gate annotation -->
+        <mxCell id="leg-hard" value="Hard Gate — Fails PR merge" style="rounded=1;fillColor=#fff1f2;strokeColor=#e11d48;strokeWidth=2;fontColor=#e11d48;fontSize=10;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="35" y="850" width="220" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Legend: Report gate annotation -->
+        <mxCell id="leg-report" value="Report Gate — Informational only" style="rounded=1;fillColor=#f0fdf4;strokeColor=#16a34a;strokeWidth=2;fontColor=#16a34a;fontSize=10;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="35" y="895" width="220" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Legend: Release track annotation -->
+        <mxCell id="leg-release" value="Release Track — Manual workflow dispatch" style="rounded=1;fillColor=#fffbeb;strokeColor=#d97706;strokeWidth=2;fontColor=#d97706;fontSize=10;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="35" y="940" width="260" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Legend: Keyless sign annotation -->
+        <mxCell id="leg-sign" value="Cosign — Keyless sign via Sigstore OIDC" style="rounded=1;fillColor=#faf5ff;strokeColor=#9333ea;strokeWidth=2;fontColor=#9333ea;fontSize=10;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="35" y="985" width="260" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Legend: Tech Stack label -->
+        <mxCell id="leg-tech-label" value="Tech Stack" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontColor=#374151;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="35" y="1038" width="100" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Tech stack logos row -->
+        <mxCell id="ts-githubactions" value="GitHub&#xa;Actions" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=8;fontColor=#334155;image=https://cdn.simpleicons.org/githubactions/2088FF;" vertex="1" parent="1">
+          <mxGeometry x="35" y="1070" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ts-docker" value="Docker" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=8;fontColor=#334155;image=https://cdn.simpleicons.org/docker/2496ED;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1070" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ts-python" value="Python" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=8;fontColor=#334155;image=https://cdn.simpleicons.org/python/3776AB;" vertex="1" parent="1">
+          <mxGeometry x="145" y="1070" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ts-opa" value="OPA" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=8;fontColor=#334155;image=https://cdn.simpleicons.org/openpolicyagent/7B42BC;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1070" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ts-terraform" value="Terraform" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=8;fontColor=#334155;image=https://cdn.simpleicons.org/terraform/7B42BC;" vertex="1" parent="1">
+          <mxGeometry x="255" y="1070" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ts-fastapi" value="FastAPI" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=8;fontColor=#334155;image=https://cdn.simpleicons.org/fastapi/009688;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1070" width="38" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="ts-aqua" value="Trivy/Syft" style="image;aspect=fixed;html=1;points=[];align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;fontSize=8;fontColor=#334155;image=https://cdn.simpleicons.org/aquasecurity/1904DA;" vertex="1" parent="1">
+          <mxGeometry x="365" y="1070" width="38" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- ===================== TITLE ===================== -->
+        <mxCell id="title" value="DevSecOps CI/CD Pipeline — Shift-Left Security with 8 Parallel Gates &amp; Keyless Signing" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#1e293b;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="10" width="1800" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
